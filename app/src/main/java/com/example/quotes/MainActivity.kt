@@ -27,10 +27,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        GlobalScope.launch {
-            val response = quotesApi.getQuotesCategoryList()
-            println("ZACT ${response.body()} ${response.code()}")
-        }
         setContent {
             QuotesserverdrivenTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
