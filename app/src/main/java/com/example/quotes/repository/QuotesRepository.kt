@@ -15,7 +15,7 @@ class QuotesRepository @Inject constructor(private val quotesApi: QuotesApi) {
     val quotesCategory = _quotesCategory.asStateFlow()
 
     private val _singleCategoryQuotes = MutableStateFlow<List<QuotesItem>>(emptyList())
-    val singleCategoryQuotes = _quotesCategory.asStateFlow()
+    val singleCategoryQuotes = _singleCategoryQuotes.asStateFlow()
 
 
     suspend fun getQuotesList() {
@@ -27,7 +27,7 @@ class QuotesRepository @Inject constructor(private val quotesApi: QuotesApi) {
 
 
     suspend fun getSingleCategoryQuotes(category: String) {
-        val response = quotesApi.getSingleCategoryQuotes(category)
+        val response = quotesApi.getSingleCategoryQuotes("quotes[?(@.category==\"$category\")]")
         if (response.isSuccessful && response.body().isNullOrEmpty().not()) {
             _singleCategoryQuotes.value = response.body()!!
         }
