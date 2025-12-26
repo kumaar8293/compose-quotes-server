@@ -21,7 +21,7 @@ import com.example.quotes.viewmodels.QuotesDetailsViewModel
 
 /**
  * Composable screen that displays quotes for a selected category.
- * 
+ *
  * This screen shows a scrollable list of quotes filtered by the category
  * passed via navigation arguments. The category is extracted by the ViewModel
  * from SavedStateHandle and used to fetch the appropriate quotes.
@@ -29,25 +29,28 @@ import com.example.quotes.viewmodels.QuotesDetailsViewModel
 @Composable
 fun QuoteDetailsScreen() {
     // Get ViewModel instance using Hilt
-    val quoteDetailsViewModel : QuotesDetailsViewModel = hiltViewModel()
+    val quoteDetailsViewModel: QuotesDetailsViewModel = hiltViewModel()
     // Observe the quotes StateFlow and convert to State for Compose
     val quotes = quoteDetailsViewModel.quotes.collectAsState()
+    if (quotes.value.isEmpty()) {
+        Loading()
+    } else {
 
-    // Display quotes in a scrollable column
-    LazyColumn() {
-        items(quotes.value){
-            QuoteListItem(it)
+        // Display quotes in a scrollable column
+        LazyColumn() {
+            items(quotes.value) {
+                QuoteListItem(it)
+            }
         }
     }
-
 }
 
 /**
  * Composable item that displays a single quote in a card.
- * 
+ *
  * Each quote is displayed in a Material3 Card with the quote text.
  * The card has a light gray border and padding for better visual separation.
- * 
+ *
  * @param quotes The QuotesItem containing the quote text and metadata
  */
 @Composable

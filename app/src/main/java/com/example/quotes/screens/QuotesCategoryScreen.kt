@@ -1,9 +1,11 @@
 package com.example.quotes.screens
 
+import android.graphics.fonts.Font
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -21,6 +23,7 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,11 +33,11 @@ import com.example.quotes.viewmodels.QuotesCategoryViewModel
 
 /**
  * Composable screen that displays a grid of quote categories.
- * 
+ *
  * This screen shows all available quote categories in a 2-column grid layout.
  * When a category is clicked, it navigates to the details screen showing quotes
  * for that category.
- * 
+ *
  * @param onClick Lambda function called when a category is clicked, receives the category name
  */
 @Composable
@@ -44,15 +47,19 @@ fun QuoteCategoryScreen(onClick: (category: String) -> Unit) {
     // Observe the categories StateFlow and convert to State for Compose
     val quoteCategoryList = quotesCategoryViewModel.quotesCategory.collectAsState()
 
-    // Display categories in a 2-column grid
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.SpaceAround
-    ) {
-        // Display each unique category as a clickable item
-        items(quoteCategoryList.value.distinct()) {
-            QuoteCategoryItem(it, onClick)
+    if (quoteCategoryList.value.isEmpty()) {
+        Loading()
+    } else {
+        // Display categories in a 2-column grid
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
+            // Display each unique category as a clickable item
+            items(quoteCategoryList.value.distinct()) {
+                QuoteCategoryItem(it, onClick)
+            }
         }
     }
 
@@ -60,11 +67,11 @@ fun QuoteCategoryScreen(onClick: (category: String) -> Unit) {
 
 /**
  * Composable item that displays a single category card.
- * 
+ *
  * Each category is displayed as a clickable box with a background image
  * and the category name at the bottom. When clicked, it triggers navigation
  * to show quotes for that category.
- * 
+ *
  * @param category The category name to display
  * @param onClick Lambda function called when the category card is clicked
  */
@@ -91,5 +98,13 @@ fun QuoteCategoryItem(category: String, onClick: (category: String) -> Unit) {
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(0.dp, 20.dp)
         )
+    }
+}
+
+
+@Composable
+fun Loading() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text("Loading", fontWeight = FontWeight.Bold, color = Color.Black)
     }
 }
